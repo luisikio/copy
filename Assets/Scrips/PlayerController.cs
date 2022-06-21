@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     public int monedas = 0;
     public int tempVida = 0;
     
+    public GameObject kunaiPrefabs;
+    public GameObject bulletPrefabs2;
     
     public float velocity = 20;
     public float JumpForce = 10;
@@ -37,7 +39,7 @@ public class PlayerController : MonoBehaviour
     private static readonly int fin = 7;
 
     private int temporal = 0;
-
+    private float time = 0f;
     private Puntajes Scors;
 
     void Start()
@@ -81,21 +83,80 @@ public class PlayerController : MonoBehaviour
             if(Input.GetKeyUp(KeyCode.C))
             {
                 ChangeAnimation(Animation_ataque);
+                Disparar2();
             
             }
             if (Scors.miVida == 0)
             {
                 SceneManager.LoadScene("SampleScene");
             }
+
+            timekey();
         }
 
        
+    }
+    void timekey()
+    {
+        if(Input.GetKeyDown(KeyCode.X))
+        {
+            time = Time.time;
+
+        }
+         
+        if(Input.GetKeyUp(KeyCode.X))
+        {
+            time = Time.time - time;
+            Debug.Log("Pressed for : " + time + " Seconds");
+            if (time >= 2f)
+            {
+                ChangeAnimation(Animation_ataque);
+                Disparar();
+            }
+
+        }
     }
     private void Desplazarse(int position)
     {
         _rigidbody2D.velocity = new Vector2(velocity * position, _rigidbody2D.velocity.y);
         _renderer.flipX = position == left;
         ChangeAnimation(Animation_run);
+    }
+    private void Disparar()
+    {
+        
+        //crear elementos en tiempo de ejecuccion
+        var x = this.transform.position.x;
+        var y = this.transform.position.y;
+       
+
+        var bullgo=Instantiate(kunaiPrefabs,new Vector2(x,y),Quaternion.identity) as GameObject;
+        var controller = bullgo.GetComponent<CucchilloController>();
+        
+        controller.SetController(this);
+        
+        if (_renderer.flipX)
+        {
+            
+            controller.velocity = controller.velocity * -1;
+        }
+    }
+    private void Disparar2()
+    {
+        //crear elementos en tiempo de ejecuccion
+        var x = this.transform.position.x;
+        var y = this.transform.position.y;
+
+        var bullgo=Instantiate(bulletPrefabs2,new Vector2(x,y),Quaternion.identity) as GameObject;
+        var controller = bullgo.GetComponent<CucchilloController>();
+        
+        controller.SetController(this);
+        
+        if (_renderer.flipX)
+        {
+            
+            controller.velocity = controller.velocity * -1;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -105,7 +166,7 @@ public class PlayerController : MonoBehaviour
         {
             
             vida -= 3;
-            if (vida == 0)
+            if (vida <= 0)
             {
                 SceneManager.LoadScene("SampleScene");
                 Scors.MenosVida(1);
@@ -156,7 +217,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("soy enemy");
             Scors.MenosVida(1);
             vida -= 1;
-            if (vida == 0)
+            if (vida <= 0)
             {
                 SceneManager.LoadScene("SampleScene");
             }

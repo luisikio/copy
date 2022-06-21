@@ -8,6 +8,8 @@ public class EnemyController : MonoBehaviour
     public float Velocity = 10;
     private Rigidbody2D _rb;
     private SpriteRenderer _sr;
+    
+    private float videnemy = 3;
 
 
     private PlayerController _playerController;
@@ -44,6 +46,25 @@ public class EnemyController : MonoBehaviour
         if (tag == "Limite")
         {
             _sr.flipX = false;
+        }
+        if (tag=="bola1")
+        {
+            videnemy -= 1;
+            Debug.Log(videnemy);
+            if (videnemy<=0)
+            {
+                Destroy(this.gameObject);
+                
+            }
+        }
+        if (tag=="bola2")
+        {
+            videnemy -= 2;
+            Debug.Log(videnemy);
+            if (videnemy<=0)
+            {
+                Destroy(this.gameObject);
+            }
         }
     }
 }

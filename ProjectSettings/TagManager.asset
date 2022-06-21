@@ -13,6 +13,8 @@ TagManager:
   - Enemigo
   - cietoTop
   - moneda1
+  - bola2
+  - bola1
   layers:
   - Default
   - TransparentFX
