@@ -10,7 +10,7 @@ public class CucchilloController : MonoBehaviour
    
        private PlayerController _playerController;
    
-       private float cont = 0;
+       
        
        void Start()
        {
@@ -34,10 +34,20 @@ public class CucchilloController : MonoBehaviour
            
            if (tag=="Enemigo")
            {
-              // cont += 1;
                Destroy(this.gameObject);
-               //Destroy(col.gameObject);
-               //_playerController.Puntaje(10);
+               
            }
-       }
+
+           if (tag == "Enemigo2")
+           {
+
+               Destroy(this.gameObject);
+           }
+
+           if (tag=="bugParedes")
+           {
+               Destroy(this.gameObject);
+               
+           }
+     }
 }

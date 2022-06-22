@@ -15,6 +15,10 @@ TagManager:
   - moneda1
   - bola2
   - bola1
+  - Enemigo2
+  - bugParedes
+  - activarParacaidas
+  - DesactivarParacaidas
   layers:
   - Default
   - TransparentFX

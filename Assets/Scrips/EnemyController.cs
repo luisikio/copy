@@ -10,6 +10,7 @@ public class EnemyController : MonoBehaviour
     private SpriteRenderer _sr;
     
     private float videnemy = 3;
+    private float videnemy2 = 6;
 
 
     private PlayerController _playerController;
@@ -56,12 +57,25 @@ public class EnemyController : MonoBehaviour
                 Destroy(this.gameObject);
                 
             }
+            videnemy2 -= 1;
+            Debug.Log(videnemy2);
+            if (videnemy2<=0)
+            {
+                Destroy(this.gameObject);
+            }
         }
         if (tag=="bola2")
         {
             videnemy -= 2;
             Debug.Log(videnemy);
             if (videnemy<=0)
+            {
+                Destroy(this.gameObject);
+                
+            }
+            videnemy2 -= 2;
+            Debug.Log(videnemy2);
+            if (videnemy2<=0)
             {
                 Destroy(this.gameObject);
             }

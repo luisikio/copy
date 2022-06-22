@@ -17,7 +17,12 @@ public class PlayerController : MonoBehaviour
     
     public int vida = 3;
     public int monedas = 0;
-    public int tempVida = 0;
+
+    private string moneyData="";
+    private string vidaData="";
+
+    private int escalable = 0;
+    
     
     public GameObject kunaiPrefabs;
     public GameObject bulletPrefabs2;
@@ -42,6 +47,11 @@ public class PlayerController : MonoBehaviour
     private float time = 0f;
     private Puntajes Scors;
 
+    private void Awake()
+    {
+        loadData();
+    }
+
     void Start()
     { 
         _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -56,6 +66,7 @@ public class PlayerController : MonoBehaviour
         if (temporal == 1)
         {
             ChangeAnimation(Animation_paracaidas);
+            //_rigidbody2D.gravityScale = 1;
         }
         else
         {
@@ -86,6 +97,28 @@ public class PlayerController : MonoBehaviour
                 Disparar2();
             
             }
+
+            
+            if (escalable == 1)
+            {
+                    Debug.Log(escalable);
+                    if (Input.GetKey(KeyCode.UpArrow))
+                    {
+                        ChangeAnimation(Animation_escalera);
+                        _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, 5);
+                    }
+                    else
+                    {
+                        escalable = 0;
+                    }
+            }
+            else
+            {
+                    escalable = 0;
+                    Debug.Log(escalable);
+            }
+                
+            
             if (Scors.miVida == 0)
             {
                 SceneManager.LoadScene("SampleScene");
@@ -168,6 +201,7 @@ public class PlayerController : MonoBehaviour
             vida -= 3;
             if (vida <= 0)
             {
+                ChangeAnimation(Animation_dead);
                 SceneManager.LoadScene("SampleScene");
                 Scors.MenosVida(1);
             }
@@ -182,15 +216,6 @@ public class PlayerController : MonoBehaviour
         {
             SceneManager.LoadScene("SegundEcena");
         }
-
-     
-        if (tag == "cieloTop")
-        {
-           // Debug.Log("soy tope");
-            temporal = 1;
-            
-            Debug.Log(temporal);
-        }
         if (tag == "moneda1")
         {
 
@@ -198,16 +223,45 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
             
         }
+       
     }
 
 
     private void OnTriggerStay2D(Collider2D collision)
     {
         var tag = collision.gameObject.tag;
-        if (tag == "Escalable" && Input.GetKey(KeyCode.UpArrow))
+        if (tag == "Escalable")
         {
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, 10);
+            escalable = 1;
+           // Debug.Log(escalable);
+
         }
+        if (tag == "activarParacaidas")
+        {
+            
+            temporal = 1;
+           // _rigidbody2D.gravityScale = 1;
+           // Debug.Log(temporal);
+        }
+       
+       
+        
+       
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        var tag = collision.gameObject.tag;
+        
+        if (tag == "DesactivarParacaidas")
+        {
+            
+            temporal = 0;
+            
+        //    Debug.Log(temporal);
+        }
+       
+        
+       
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -219,18 +273,45 @@ public class PlayerController : MonoBehaviour
             vida -= 1;
             if (vida <= 0)
             {
+                ChangeAnimation(Animation_dead);
                 SceneManager.LoadScene("SampleScene");
             }
         }
-        // if (other.gameObject.CompareTag("Moneda"))
-        // {
-        //     Scors.SumMonedas(1);
-        // }
+        if (other.gameObject.CompareTag("Enemigo2"))
+        {
+            Debug.Log("soy enemy");
+            Scors.MenosVida(1);
+            vida -= 2;
+            if (vida <= 0)
+            {
+                ChangeAnimation(Animation_dead);
+                SceneManager.LoadScene("SampleScene");
+            }
+        }
+        
     }
-
+    
 
     private void ChangeAnimation(int animation)
     {
         _animator.SetInteger("Estado",animation);
+    }
+
+    private void OnDestroy()
+    {
+        //saveData();
+        loadData();
+    }
+
+    private void saveData()
+    {
+        PlayerPrefs.SetInt(moneyData,monedas);
+        PlayerPrefs.SetInt(vidaData,vida);
+    }
+
+    private void loadData()
+    {
+        monedas = PlayerPrefs.GetInt(moneyData,0);
+        vida=PlayerPrefs.GetInt(vidaData,0);
     }
 }
